@@ -83,6 +83,37 @@ Class Connection extends AbstractEblicsClient
         echo 'reportText : ', $reportText, '<BR>';
     }
 
+
+     // Generate INI and HIA letters
+     public function GenerateLetters(int $credentialsId, X509GeneratorInterface $x509Generator = null, string $pathHtml){
+
+        echo 'Generate INI and HIA letters';
+
+        $client = $this->setupClientV3($credentialsId, $x509Generator, false);
+
+        $ebicsBankLetter = new \AndrewSvirin\Ebics\EbicsBankLetter();
+
+        $bankLetter = $ebicsBankLetter->prepareBankLetter(
+            $client->getBank(),
+            $client->getUser(),
+            $client->getKeyring()
+        );
+     
+        if(true){
+           $Html = $ebicsBankLetter->formatBankLetter($bankLetter, $ebicsBankLetter->createHtmlBankLetterFormatter()); // Export HTML (Impotable dans Write PRO???? A tester WP New avec Source HTML pour voir comment s'est importé)
+
+            // write the content of the letters in a file
+            $htmlfile = fopen($pathHtml, "w");
+            fwrite($htmlfile, $Html);
+            
+        }
+        else{
+            $pdf = $ebicsBankLetter->formatBankLetter($bankLetter, $ebicsBankLetter->createPdfBankLetterFormatter()); // Export pdf
+            
+            $Txt = $ebicsBankLetter->formatBankLetter($bankLetter, $ebicsBankLetter->createTxtBankLetterFormatter()); // Export TXT
+        }
+    }
+
 }
 
 ?>
