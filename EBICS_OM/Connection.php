@@ -8,6 +8,7 @@ new PathFile;
 use AndrewSvirin\Ebics\Contracts\X509GeneratorInterface;
 include_once("AbstractEbicsClient.php");
 
+// Class bringing together all the functions necessary for the ebics connection
 Class Connection extends AbstractEblicsClient
 {
     public function INIOrder(int $credentialsId, array $codes, X509GeneratorInterface $x509Generator = null)
