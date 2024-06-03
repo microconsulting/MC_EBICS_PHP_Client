@@ -62,6 +62,27 @@ Class Connection extends AbstractEblicsClient
         echo 'reportText : ', $reportText, '<BR>';
     }
 
+
+    public function HPBOrder(int $credentialsId, array $codes, X509GeneratorInterface $x509Generator = null)
+    {
+        echo 'HPB Order <BR>';
+
+        $client = $this->setupClientV3($credentialsId, $x509Generator, $codes['HPB']['fake']);
+
+        //$this->assertExceptionCode($codes['HPB']['code']);
+
+        $hpb = $client->HPB();
+
+        $responseHandler = $client->getResponseHandler();
+        $code = $responseHandler->retrieveH00XReturnCode($hpb->getTransaction()->getInitializationSegment()->getResponse());
+        $reportText = $responseHandler->retrieveH00XReportText($hpb->getTransaction()->getInitializationSegment()->getResponse());
+        //$this->assertResponseOk($code, $reportText);
+        $this->saveKeyring($credentialsId, $client->getKeyring());
+
+        echo 'code : ', $code, '<BR>';
+        echo 'reportText : ', $reportText, '<BR>';
+    }
+
 }
 
 ?>

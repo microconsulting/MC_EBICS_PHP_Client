@@ -13,12 +13,17 @@ $code = array(
     'HIA' => array(
         'fake' => false
         ),
+    'HPB' => array(
+        'fake' => false
+        ),
     );
 
 $x509Generator = new MyCompanyX509Generator ;
 //$connection->INIOrder(0, $code, $x509Generator);
 
-$connection->HIAOrder(0, $code, $x509Generator);
+//$connection->HIAOrder(0, $code, $x509Generator);
+
+$connection->HPBOrder(0, $code, $x509Generator);
 
 // $a = [
 //     'subject' => [
