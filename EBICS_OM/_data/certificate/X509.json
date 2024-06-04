@@ -1,0 +1,13 @@
+{
+    "subject":
+    {
+        "DN":
+        {
+            "id-at-countryName":"FR",
+            "id-at-stateOrProvinceName":"State",
+            "id-at-localityName":"City",
+            "id-at-organizationName":"Your company",
+            "id-at-commonName":"yourwebsite.tld"
+        }
+    }
+}
