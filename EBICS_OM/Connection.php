@@ -34,6 +34,8 @@ Class Connection extends AbstractEblicsClient
 
         echo 'code : ', $code, '<BR>';
         echo 'reportText : ', $reportText, '<BR>';
+
+        return $code;
     }
 
 
@@ -60,6 +62,8 @@ Class Connection extends AbstractEblicsClient
 
         echo 'code : ', $code, '<BR>';
         echo 'reportText : ', $reportText, '<BR>';
+
+        return $code;
     }
 
 
@@ -81,6 +85,8 @@ Class Connection extends AbstractEblicsClient
 
         echo 'code : ', $code, '<BR>';
         echo 'reportText : ', $reportText, '<BR>';
+
+        //return $code;
     }
 
 
