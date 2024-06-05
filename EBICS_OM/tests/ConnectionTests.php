@@ -121,25 +121,9 @@ Class ConnectionTests {
     // Tests the execution of INI and HIA scripts when orders have already been sent
     public function testResendOrder(string $order, array $args) {
         
-
         $result = $this->testConnectionOrder($order, $args);
-        echo "********";
-        echo $result;
         if ($result=="091002"){return true;}
         return false;
-
-        // try {
-        //     $this->testConnectionOrder($order, $args);
-        // }
-        // catch (InvalidUserOrUserStateException $e) {
-        //     echo "*** 1 exception ****";
-        //     return true;
-        // }
-        // catch(AuthenticationFailedException $e) {
-        //     echo "*** 2 exception ****";
-        //     return true;
-        // }
-        // return false;
     }
 
 }

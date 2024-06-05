@@ -209,7 +209,4 @@ else {
 
 echo "<BR> TOTAL : ", $passed_tests, "/", $total_tests, " <BR>";
 
-
-
-
 ?>
