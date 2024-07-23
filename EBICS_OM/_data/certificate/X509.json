@@ -3,11 +3,11 @@
     {
         "DN":
         {
-            "id-at-countryName":"FR",
-            "id-at-stateOrProvinceName":"State",
-            "id-at-localityName":"City",
-            "id-at-organizationName":"Your company",
-            "id-at-commonName":"yourwebsite.tld"
+            "id-at-countryName":"CH",
+            "id-at-stateOrProvinceName":"Vaud",
+            "id-at-localityName":"Le Mont-sur-Lausanne",
+            "id-at-organizationName":"Micro Consulting SA",
+            "id-at-commonName":"https://www.microconsulting.ch"
         }
     }
 }

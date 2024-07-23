@@ -97,6 +97,50 @@ abstract class AbstractEblicsClient
         $keyringManager->saveKeyring($keyring, $keyringRealPath);
     }
 
+
+    //TODO: adapter pour tous les fichiers pain.001
+    protected function buildCustomerCreditTransfer(string $schema): CustomerCreditTransfer
+    {
+        $builder = new CustomerSwissCreditTransferBuilder();
+        $customerCreditTransfer = $builder
+            ->createInstance(
+                $schema,
+                'ZKBKCHZZ80A',
+                'SE7500800000000000001123',
+                'Debitor Name'
+            )
+            ->addBankTransaction(
+                'MARKDEF1820',
+                'DE09820000000083001503',
+                new StructuredPostalAddress('CH', 'Triesen', '9495'),
+                100.10,
+                'CHF',
+                'Test payment  1'
+            )
+            ->addSEPATransaction(
+                'GIBASKBX',
+                'SK4209000000000331819272',
+                'Creditor Name 4',
+                null, // new UnstructuredPostalAddress(),
+                200.02,
+                'EUR',
+                'Test payment  2'
+            )
+            ->addForeignTransaction(
+                'NWBKGB2L',
+                'GB29 NWBK 6016 1331 9268 19',
+                'United Development Ltd',
+                new UnstructuredPostalAddress('GB', 'George Street', 'BA1 2FJ Bath'),
+                65.10,
+                'GBP',
+                'Test payment 3'
+            )
+            ->popInstance();
+
+        
+        return $customerCreditTransfer;
+    }
+
 }
 
 ?>

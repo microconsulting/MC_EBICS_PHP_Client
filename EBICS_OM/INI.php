@@ -1,9 +1,5 @@
 <?php
 // Php script allowing the execution of the INI command
-
-use AndrewSvirin\Ebics\Exceptions\IncompatibleOrderAttributeException;
-use AndrewSvirin\Ebics\Exceptions\TxMessageReplayException;
-use App\Factories\X509\MyCompanyX509Generator;
 include_once("PathFile.php");
 include_once("Connection.php");
 include_once("MyCompanyX509Generator.php");
@@ -18,9 +14,6 @@ $code = array(
     );
 
 $x509Generator = new MyCompanyX509Generator ;
-
-echo '********* <BR>';
-var_dump($argv);
 
 // Incorrect number of parameters
 if (sizeof($argv)!=2) {

@@ -1,7 +1,7 @@
 <?php
 // Php script generates INI and HIA letters in HTML format
 
-use App\Factories\X509\MyCompanyX509Generator;
+//use App\Factories\X509\MyCompanyX509Generator;
 include_once("PathFile.php");
 include_once("Connection.php");
 include_once("MyCompanyX509Generator.php");

@@ -1,7 +1,6 @@
 <?php
 
-namespace App\Factories\X509;
-
+//namespace App\Factories\X509;
 use AndrewSvirin\Ebics\Models\X509\AbstractX509Generator;
 
 class MyCompanyX509Generator extends AbstractX509Generator

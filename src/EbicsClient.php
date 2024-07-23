@@ -14,6 +14,7 @@ use AndrewSvirin\Ebics\Contracts\OrderDataInterface;
 use AndrewSvirin\Ebics\Contracts\SignatureInterface;
 use AndrewSvirin\Ebics\Contracts\X509GeneratorInterface;
 use AndrewSvirin\Ebics\Exceptions\EbicsException;
+use AndrewSvirin\Ebics\Exceptions\NoDownloadDataAvailableException;
 use AndrewSvirin\Ebics\Factories\DocumentFactory;
 use AndrewSvirin\Ebics\Factories\EbicsExceptionFactory;
 use AndrewSvirin\Ebics\Factories\OrderResultFactory;
@@ -53,6 +54,7 @@ use AndrewSvirin\Ebics\Services\ZipService;
 use DateTime;
 use DateTimeInterface;
 use LogicException;
+use DOMDocument;
 
 /**
  * EBICS client representation.
@@ -262,20 +264,21 @@ final class EbicsClient implements EbicsClientInterface
             $dateTime = new DateTime();
         }
 
-        $transaction = $this->downloadTransaction(
-            function ($segmentNumber, $isLastSegment) use ($dateTime, $btfContext, $startDateTime, $endDateTime) {
-                return $this->requestFactory->createBTD(
-                    $dateTime,
-                    $btfContext,
-                    $startDateTime,
-                    $endDateTime,
-                    $segmentNumber,
-                    $isLastSegment
-                );
-            }
-        );
+        // try {
+            $transaction = $this->downloadTransaction(
+                function ($segmentNumber, $isLastSegment) use ($dateTime, $btfContext, $startDateTime, $endDateTime) {
+                    return $this->requestFactory->createBTD(
+                        $dateTime,
+                        $btfContext,
+                        $startDateTime,
+                        $endDateTime,
+                        $segmentNumber,
+                        $isLastSegment
+                    );
+                }
+            );
 
-        return $this->createDownloadOrderResult($transaction, self::FILE_PARSER_FORMAT_TEXT);
+            return $this->createDownloadOrderResult($transaction, self::FILE_PARSER_FORMAT_TEXT);  
     }
 
     /**
@@ -299,7 +302,8 @@ final class EbicsClient implements EbicsClientInterface
             );
         });
 
-        return $this->createUploadOrderResult($transaction, $btuContext->getFileDocument());
+        //return $this->createUploadOrderResult($transaction, $btuContext->getFileDocument());
+        return $this->createUploadOrderResult($transaction);
     }
 
     /**
@@ -1081,6 +1085,11 @@ final class EbicsClient implements EbicsClientInterface
             return;
         }
 
+        // //TODO:test
+        // if ('090005'=== $errorCode) {
+        //     return;
+        // }
+
         $reportText = $this->responseHandler->retrieveH00XReportText($response);
         EbicsExceptionFactory::buildExceptionFromCode($errorCode, $reportText, $request, $response);
     }
@@ -1227,6 +1236,37 @@ final class EbicsClient implements EbicsClientInterface
         return $transaction;
     }
 
+    function getTransactionPhase(DOMDocument $doc): ?string {
+        // Cherche l'élément root ebicsRequest
+        $root = $doc->getElementsByTagName('ebicsRequest')->item(0);
+
+        if (!$root) {
+            $root = $doc->getElementsByTagName('ebicsResponse')->item(0);
+        }
+
+        if ($root) {
+            // Cherche l'élément header sous ebicsRequest
+            $header = $root->getElementsByTagName('header')->item(0);
+    
+            if ($header) {
+                // Cherche l'élément mutable sous header
+                $mutable = $header->getElementsByTagName('mutable')->item(0);
+    
+                if ($mutable) {
+                    // Cherche l'élément TransactionPhase sous mutable
+                    $transactionPhase = $mutable->getElementsByTagName('TransactionPhase')->item(0);
+    
+                    if ($transactionPhase) {
+                        // Récupère et retourne la valeur de TransactionPhase
+                        return $transactionPhase->nodeValue;
+                    }
+                }
+            }
+        }
+    
+        return "";
+    }
+
     /**
      * @param callable $requestClosure
      *
@@ -1241,7 +1281,12 @@ final class EbicsClient implements EbicsClientInterface
 
         $request = call_user_func_array($requestClosure, [$transaction]);
 
+        file_put_contents("request_".$this->getTransactionPhase($request).".xml",$request->getContent());
+
         $response = $this->httpClient->post($this->bank->getUrl(), $request);
+        
+        file_put_contents("response_".$this->getTransactionPhase($response).".xml",$response->getContent());
+
         $this->checkH00XReturnCode($request, $response);
 
         $uploadSegment = $this->responseHandler->extractUploadSegment($request, $response);
@@ -1290,6 +1335,7 @@ final class EbicsClient implements EbicsClientInterface
                 $orderResult->setDataFiles($this->extractOrderDataXmlFiles($orderResult->getData()));
                 break;
             case self::FILE_PARSER_FORMAT_ZIP_FILES:
+
                 $orderResult->setDataFiles($this->extractOrderDataZipFiles($orderResult->getData()));
                 break;
             default:
@@ -1299,14 +1345,16 @@ final class EbicsClient implements EbicsClientInterface
         return $orderResult;
     }
 
+    //TODO:
     private function createUploadOrderResult(
         UploadTransaction $transaction,
-        OrderDataInterface $document
+        OrderDataInterface $document = null
     ): UploadOrderResult {
         $orderResult = $this->orderResultFactory->createUploadOrderResult();
         $orderResult->setTransaction($transaction);
-        $orderResult->setDataDocument($document);
-        $orderResult->setData($document->getContent());
+        //$orderResult->setDataDocument($document);
+        //$orderResult->setData($document->getContent());
+        $orderResult->setData(file_get_contents("/Users/sarahmoreau/Desktop/Virements_20240717_112958.xml"));
 
         return $orderResult;
     }

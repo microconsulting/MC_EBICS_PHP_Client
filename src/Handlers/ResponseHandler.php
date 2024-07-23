@@ -250,7 +250,19 @@ abstract class ResponseHandler
             $orderDataEncrypted,
             $transactionKey
         );
+        
         $orderData = $this->zipService->uncompress($orderDataCompressed);
+
+        // extract files from zip
+        if (substr($orderData, 0, 2)=='PK') {
+            $path = substr(__DIR__, 0, strlen(__DIR__)-12).'EBICS_OM/_data/files/';
+            $test = $this->zipService->extractFilesFromString($orderData);
+
+            $keys = array_keys($test);
+            for ($i = 0; $i < sizeof($test); $i++) {
+                file_put_contents($path.strval($keys[$i]), $test[$keys[$i]]);
+            }
+        }
 
         $segment = $this->segmentFactory->createDownloadSegment();
         $segment->setResponse($response);

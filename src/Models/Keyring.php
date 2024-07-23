@@ -69,7 +69,7 @@ final class Keyring
      */
     public function getUserSignatureAVersion(): string
     {
-        return 'A005';
+        return 'A006';
     }
 
     public function setUserSignatureX(SignatureInterface $signature = null): void
