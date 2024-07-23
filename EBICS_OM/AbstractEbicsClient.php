@@ -23,17 +23,15 @@ abstract class AbstractEblicsClient
     
     protected function setupClientV3(
         int $credentialsId,
-        X509GeneratorInterface $x509Generator = null,
-        bool $fake = false
+        X509GeneratorInterface $x509Generator = null
     ): EbicsClientInterface {
-        return $this->setupClient(Keyring::VERSION_30, $credentialsId, $x509Generator, $fake);
+        return $this->setupClient(Keyring::VERSION_30, $credentialsId, $x509Generator);
     }
 
     private function setupClient(
         string $version,
         int $credentialsId,
-        X509GeneratorInterface $x509Generator = null,
-        bool $fake = false
+        X509GeneratorInterface $x509Generator = null
     ): EbicsClientInterface {
         $credentials = $this->credentialsDataProvider($credentialsId);
 
@@ -47,10 +45,6 @@ abstract class AbstractEblicsClient
         $ebicsClient = new EbicsClient($bank, $user, $keyring);
 
         $ebicsClient->setX509Generator($x509Generator);
-
-        if (true === $fake) {
-            $ebicsClient->setHttpClient(new FakerHttpClient($this->fixtures));
-        }
 
         return $ebicsClient;
     }

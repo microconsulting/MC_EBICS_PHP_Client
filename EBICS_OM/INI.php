@@ -7,12 +7,6 @@ include_once("MyCompanyX509Generator.php");
 new PathFile() ;
 $connection = new Connection();
 
-$code = array(
-    'INI' => array(
-        'fake' => false
-        ),
-    );
-
 $x509Generator = new MyCompanyX509Generator ;
 
 // Incorrect number of parameters
@@ -33,6 +27,6 @@ else{
     }
 }
 
-$connection->INIOrder($credentialsID, $code, $x509Generator);
+$connection->INIOrder($credentialsID, $x509Generator);
 
 ?>

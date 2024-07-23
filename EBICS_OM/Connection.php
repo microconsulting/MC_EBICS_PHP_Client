@@ -15,10 +15,10 @@ include_once("AbstractEbicsClient.php");
 Class Connection extends AbstractEblicsClient
 {
     // Execute the INI order
-    public function INIOrder(int $credentialsId, array $codes, X509GeneratorInterface $x509Generator = null)
+    public function INIOrder(int $credentialsId, X509GeneratorInterface $x509Generator = null)
     {
         echo 'INI Order <BR>';
-        $client = $this->setupClientV3($credentialsId, $x509Generator, $codes['INI']['fake']);
+        $client = $this->setupClientV3($credentialsId, $x509Generator);
 
         // Check that keyring is empty and or wait on success or wait on exception.
         $userExists = $client->getKeyring()->getUserSignatureA();
@@ -41,10 +41,10 @@ Class Connection extends AbstractEblicsClient
 
 
     // Execute the HIA order
-    public function HIAOrder(int $credentialsId, array $codes, X509GeneratorInterface $x509Generator = null)
+    public function HIAOrder(int $credentialsId, X509GeneratorInterface $x509Generator = null)
     {
         echo 'HIA Order <BR>';
-        $client = $this->setupClientV3($credentialsId, $x509Generator, $codes['HIA']['fake']);
+        $client = $this->setupClientV3($credentialsId, $x509Generator);
 
         //Check that keyring is empty and or wait on success or wait on exception.
         $bankExists = $client->getKeyring()->getUserSignatureX();
@@ -67,11 +67,11 @@ Class Connection extends AbstractEblicsClient
 
 
     // Execute the HPB order
-    public function HPBOrder(int $credentialsId, array $codes, X509GeneratorInterface $x509Generator = null)
+    public function HPBOrder(int $credentialsId, X509GeneratorInterface $x509Generator = null)
     {
         echo 'HPB Order <BR>';
 
-        $client = $this->setupClientV3($credentialsId, $x509Generator, $codes['HPB']['fake']);
+        $client = $this->setupClientV3($credentialsId, $x509Generator);
         $hpb = $client->HPB();
 
         $responseHandler = $client->getResponseHandler();
@@ -88,7 +88,7 @@ Class Connection extends AbstractEblicsClient
 
         echo 'Generate INI and HIA letters';
 
-        $client = $this->setupClientV3($credentialsId, $x509Generator, false);
+        $client = $this->setupClientV3($credentialsId, $x509Generator);
 
         $ebicsBankLetter = new \AndrewSvirin\Ebics\EbicsBankLetter();
 
@@ -114,10 +114,10 @@ Class Connection extends AbstractEblicsClient
     }
 
 
-    public function BTUOrder(int $credentialsId, array $codes, X509GeneratorInterface $x509Generator = null){
+    public function BTUOrder(int $credentialsId, X509GeneratorInterface $x509Generator = null){
 
         echo '*** BTU *** <BR><BR>';
-        $client = $this->setupClientV3($credentialsId, $x509Generator, $codes['BTU']['fake']);
+        $client = $this->setupClientV3($credentialsId, $x509Generator);
         //$customerCreditTransfer = $this->buildCustomerCreditTransfer('urn:iso:std:iso:20022:tech:xsd:pain.001.001.09');
 
         // XE2
@@ -161,9 +161,9 @@ Class Connection extends AbstractEblicsClient
     }
 
 
-    public function HVEOrder(int $credentialsId, array $codes, X509GeneratorInterface $x509Generator = null)
+    public function HVEOrder(int $credentialsId, X509GeneratorInterface $x509Generator = null)
     {
-        $client = $this->setupClientV3($credentialsId, $x509Generator, $codes['HVE']['fake']);
+        $client = $this->setupClientV3($credentialsId, $x509Generator);
 
         //$this->assertExceptionCode($codes['HVE']['code']);
 
@@ -197,46 +197,13 @@ Class Connection extends AbstractEblicsClient
     }
 
 
-    // Execute BTU order
-    public function BTDOrder(int $credentialsId, array $codes, X509GeneratorInterface $x509Generator = null)
-    {
-        $client = $this->setupClientV3($credentialsId, $x509Generator, $codes['BTD']['fake']);
 
-        $context = new BTDContext();
 
-        //pain.002
-        // $context->setServiceName('PSR');
-        // $context->setMsgName('pain.002');
-        // $context->setMsgNameVersion('03');
-        // $context->setScope('CH');
-        // $context->setContainerType('ZIP');
-
-        //camt.054
-        $context->setServiceName('REP');
-        $context->setMsgName('camt.054');
-        $context->setMsgNameVersion('04');
-        $context->setScope('CH');
-        $context->setContainerType('ZIP');
-
-        $btd = $client->BTD($context, null, new DateTime('2024-07-05'), new DateTime('2024-07-12'));
-
-        $responseHandler = $client->getResponseHandler();
-
-        $code = $responseHandler->retrieveH00XReturnCode($btd->getTransaction()->getLastSegment()->getResponse());
-        $reportText = $responseHandler->retrieveH00XReportText($btd->getTransaction()->getLastSegment()->getResponse());
-
-        $code = $responseHandler->retrieveH00XReturnCode($btd->getTransaction()->getReceipt());
-        $reportText = $responseHandler->retrieveH00XReportText($btd->getTransaction()->getReceipt());
-
-        return $code;
-
-    }
-
-    public function HPDOrder(int $credentialsId, array $codes, X509GeneratorInterface $x509Generator = null)
+    public function HPDOrder(int $credentialsId, X509GeneratorInterface $x509Generator = null)
     {
         echo '*** HPD *** <BR><BR>';
 
-        $client = $this->setupClientV3($credentialsId, $x509Generator, $codes['HPD']['fake']);
+        $client = $this->setupClientV3($credentialsId, $x509Generator);
 
         //$this->assertExceptionCode($codes['HPD']['code']);
         $hpd = $client->HPD();
@@ -263,11 +230,11 @@ Class Connection extends AbstractEblicsClient
     }
 
 
-    public function HKDOrder(int $credentialsId, array $codes, X509GeneratorInterface $x509Generator = null)
+    public function HKDOrder(int $credentialsId, X509GeneratorInterface $x509Generator = null)
     {
         echo '*** HKD *** <BR><BR>';
 
-        $client = $this->setupClientV3($credentialsId, $x509Generator, $codes['HKD']['fake']);
+        $client = $this->setupClientV3($credentialsId, $x509Generator);
 
         //$this->assertExceptionCode($codes['HKD']['code']);
         $hkd = $client->HKD();
@@ -293,11 +260,11 @@ Class Connection extends AbstractEblicsClient
         } else {echo '<BR> 1 : PROBLEM : ', $reportText, '<BR>';}
     }
 
-    public function HTDOrder(int $credentialsId, array $codes, X509GeneratorInterface $x509Generator = null)
+    public function HTDOrder(int $credentialsId, X509GeneratorInterface $x509Generator = null)
     {
         echo '*** HKD *** <BR><BR>';
 
-        $client = $this->setupClientV3($credentialsId, $x509Generator, $codes['HTD']['fake']);
+        $client = $this->setupClientV3($credentialsId, $x509Generator);
 
         //$this->assertExceptionCode($codes['HKD']['code']);
         $htd = $client->HTD();

@@ -9,63 +9,31 @@ include_once("MyCompanyX509Generator.php");
 new PathFile() ;
 $connection = new Connection();
 
-$code = array(
-    'INI' => array(
-        'fake' => false
-        ),
-    'HIA' => array(
-        'fake' => false
-        ),
-    'HPB' => array(
-        'fake' => false
-        ),
-    'Z54' => array(
-        'fake' => false
-        ),
-    'BTU' => array(
-        'fake'=> false
-        ),
-    'BTD' => array(
-        'fake'=> false
-        ),
-    'HVE' => array(
-        'fake'=> false
-        ),  
-    'HPD' => array(
-        'fake'=> false
-        ),
-    'HKD' => array(
-        'fake'=> false
-        ),
-    'HTD' => array(
-        'fake'=> false
-        ),
-    );
 
 $x509Generator = new MyCompanyX509Generator ;
 
 
 
 
-//$connection->HPDOrder(2, $code, $x509Generator);
+//$connection->HPDOrder(2, $x509Generator);
 
-//$connection->HKDOrder(1, $code, $x509Generator);
-
-
-$connection->BTUOrder(1, $code, $x509Generator);
-
-//$connection->HVEOrder(1, $code, $x509Generator);
+//$connection->HKDOrder(1, $x509Generator);
 
 
-//$connection->BTDOrder(2, $code, $x509Generator);
+$connection->BTUOrder(1, $x509Generator);
 
-//$connection->Z54Order(1, $code, $x509Generator);
+//$connection->HVEOrder(1, $x509Generator);
 
-//$connection->INIOrder(1, $code, $x509Generator);
 
-//$connection->HIAOrder(1, $code, $x509Generator);
+//$connection->BTDOrder(2, $x509Generator);
 
-//$connection->HPBOrder(1, $code, $x509Generator);
+//$connection->Z54Order(1, $x509Generator);
+
+//$connection->INIOrder(1, $x509Generator);
+
+//$connection->HIAOrder(1,$x509Generator);
+
+//$connection->HPBOrder(1, $x509Generator);
 
 //$connection->GenerateLetters(0, $x509Generator, '/Users/sarahmoreau/Documents/NewLetters.html');
 

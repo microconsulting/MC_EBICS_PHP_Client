@@ -9,12 +9,6 @@ include_once("MyCompanyX509Generator.php");
 new PathFile() ;
 $connection = new Connection();
 
-$code = array(
-    'HPB' => array(
-        'fake' => false
-        ),
-    );
-
 $x509Generator = new MyCompanyX509Generator ;
 
 // Incorrect number of parameters
@@ -35,6 +29,6 @@ else{
     }
 }
 
-$connection->HPBOrder($credentialsID, $code, $x509Generator);
+$connection->HPBOrder($credentialsID, $x509Generator);
 
 ?>
