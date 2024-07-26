@@ -96,38 +96,56 @@ abstract class AbstractEblicsClient
     protected function buildCustomerCreditTransfer(string $schema): CustomerCreditTransfer
     {
         $builder = new CustomerSwissCreditTransferBuilder();
+        // $customerCreditTransfer = $builder
+        //     ->createInstance(
+        //         $schema,
+        //         'ZKBKCHZZ80A',
+        //         'SE7500800000000000001123',
+        //         'Debitor Name'
+        //     )
+        //     ->addBankTransaction(
+        //         'MARKDEF1820',
+        //         'DE09820000000083001503',
+        //         new StructuredPostalAddress('CH', 'Triesen', '9495'),
+        //         100.10,
+        //         'CHF',
+        //         'Test payment  1'
+        //     )
+        //     ->addSEPATransaction(
+        //         'GIBASKBX',
+        //         'SK4209000000000331819272',
+        //         'Creditor Name 4',
+        //         null, // new UnstructuredPostalAddress(),
+        //         200.02,
+        //         'EUR',
+        //         'Test payment  2'
+        //     )
+        //     ->addForeignTransaction(
+        //         'NWBKGB2L',
+        //         'GB29 NWBK 6016 1331 9268 19',
+        //         'United Development Ltd',
+        //         new UnstructuredPostalAddress('GB', 'George Street', 'BA1 2FJ Bath'),
+        //         65.10,
+        //         'GBP',
+        //         'Test payment 3'
+        //     )
+        //     ->popInstance();
+
+
         $customerCreditTransfer = $builder
             ->createInstance(
                 $schema,
-                'ZKBKCHZZ80A',
-                'SE7500800000000000001123',
-                'Debitor Name'
+                'BCVLCH2L',
+                'CH1300767000C08565065',
+                'Micro Consulting SA'
             )
             ->addBankTransaction(
-                'MARKDEF1820',
-                'DE09820000000083001503',
-                new StructuredPostalAddress('CH', 'Triesen', '9495'),
-                100.10,
+                'CH4000243243F53737360',
+                'Mulder Roland',
+                new StructuredPostalAddress('CH', 'Pully', '1009', 'chemin de la Vuachere 26'),
+                1.00,
                 'CHF',
-                'Test payment  1'
-            )
-            ->addSEPATransaction(
-                'GIBASKBX',
-                'SK4209000000000331819272',
-                'Creditor Name 4',
-                null, // new UnstructuredPostalAddress(),
-                200.02,
-                'EUR',
-                'Test payment  2'
-            )
-            ->addForeignTransaction(
-                'NWBKGB2L',
-                'GB29 NWBK 6016 1331 9268 19',
-                'United Development Ltd',
-                new UnstructuredPostalAddress('GB', 'George Street', 'BA1 2FJ Bath'),
-                65.10,
-                'GBP',
-                'Test payment 3'
+                'Facture 1'
             )
             ->popInstance();
 

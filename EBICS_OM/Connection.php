@@ -86,7 +86,7 @@ Class Connection extends AbstractEblicsClient
      // Generate INI and HIA letters
      public function GenerateLetters(int $credentialsId, X509GeneratorInterface $x509Generator = null, string $pathHtml){
 
-        echo 'Generate INI and HIA letters';
+        //echo 'Generate INI and HIA letters <BR><BR>';
 
         $client = $this->setupClientV3($credentialsId, $x509Generator);
 
@@ -97,20 +97,36 @@ Class Connection extends AbstractEblicsClient
             $client->getUser(),
             $client->getKeyring()
         );
-     
-        if(true){
-           $Html = $ebicsBankLetter->formatBankLetter($bankLetter, $ebicsBankLetter->createHtmlBankLetterFormatter()); // Export HTML (Impotable dans Write PRO???? A tester WP New avec Source HTML pour voir comment s'est importé)
 
-            // write the content of the letters in a file
-            $htmlfile = fopen($pathHtml, "w");
-            fwrite($htmlfile, $Html);
-            
-        }
-        else{
-            $pdf = $ebicsBankLetter->formatBankLetter($bankLetter, $ebicsBankLetter->createPdfBankLetterFormatter()); // Export pdf
-            
-            $Txt = $ebicsBankLetter->formatBankLetter($bankLetter, $ebicsBankLetter->createTxtBankLetterFormatter()); // Export TXT
-        }
+        $certificateA = substr($bankLetter->getSignatureBankLetterA()->getCertificateContent(), 29, strlen($bankLetter->getSignatureBankLetterA()->getCertificateContent())-28);
+        $certificateA = substr($certificateA, 0, strlen($certificateA)-27);
+
+        $certificateX = substr($bankLetter->getSignatureBankLetterX()->getCertificateContent(), 29, strlen($bankLetter->getSignatureBankLetterX()->getCertificateContent())-28);
+        $certificateX = substr($certificateX, 0, strlen($certificateX)-27);
+    
+        $certificateE = substr($bankLetter->getSignatureBankLetterE()->getCertificateContent(), 29, strlen($bankLetter->getSignatureBankLetterE()->getCertificateContent())-28);
+        $certificateE = substr($certificateE, 0, strlen($certificateE)-27);
+
+        echo $bankLetter->getBank()->getHostId();
+        echo ";";
+        echo $bankLetter->getUser()->getUserId();
+        echo ";";
+        echo $bankLetter->getUser()->getPartnerId();
+        echo ";";
+        //echo $bankLetter->getSignatureBankLetterA()->getCertificateContent();
+        echo $certificateA;
+        echo ";";
+        echo  $bankLetter->getSignatureBankLetterA()->getKeyHash();
+        echo ";";
+        //echo $bankLetter->getSignatureBankLetterX()->getCertificateContent();
+        echo $certificateX;
+        echo ";";
+        echo  $bankLetter->getSignatureBankLetterX()->getKeyHash();
+        echo ";";
+        //echo $bankLetter->getSignatureBankLetterE()->getCertificateContent();
+        echo $certificateE;
+        echo ";";
+        echo  $bankLetter->getSignatureBankLetterE()->getKeyHash();
     }
 
 
@@ -118,7 +134,7 @@ Class Connection extends AbstractEblicsClient
 
         echo '*** BTU *** <BR><BR>';
         $client = $this->setupClientV3($credentialsId, $x509Generator);
-        //$customerCreditTransfer = $this->buildCustomerCreditTransfer('urn:iso:std:iso:20022:tech:xsd:pain.001.001.09');
+        $customerCreditTransfer = $this->buildCustomerCreditTransfer('urn:iso:std:iso:20022:tech:xsd:pain.001.001.03');
 
         // XE2
         $context = new BTUContext();
@@ -137,6 +153,9 @@ Class Connection extends AbstractEblicsClient
 
         $responseHandler = $client->getResponseHandler();
 
+        echo ' response Handler <BR>';
+        var_dump($responseHandler);
+
         $code = $responseHandler->retrieveH00XReturnCode($btu->getTransaction()->getLastSegment()->getResponse());
         $reportText = $responseHandler->retrieveH00XReportText($btu->getTransaction()->getLastSegment()->getResponse());
         
@@ -145,7 +164,7 @@ Class Connection extends AbstractEblicsClient
         file_put_contents('/Users/sarahmoreau/Desktop/Init.xml',$btu->getTransaction()->getInitialization()->getResponse()->getContent());
 
         echo $reportText;
-
+       
         if ($code == '000000'){
             echo '<BR> 1 : OK ! <BR>';
         } else {echo '<BR> 1 : PROBLEM !!! <BR>';}

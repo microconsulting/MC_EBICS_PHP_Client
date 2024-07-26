@@ -1060,6 +1060,7 @@ final class EbicsClient implements EbicsClientInterface
                 $segment->getIsLastSegment()
             );
             $response = $this->httpClient->post($this->bank->getUrl(), $request);
+
             $this->checkH00XReturnCode($request, $response);
 
             $segment->setResponse($response);
@@ -1084,11 +1085,6 @@ final class EbicsClient implements EbicsClientInterface
         if ('011000' === $errorCode) {
             return;
         }
-
-        // //TODO:test
-        // if ('090005'=== $errorCode) {
-        //     return;
-        // }
 
         $reportText = $this->responseHandler->retrieveH00XReportText($response);
         EbicsExceptionFactory::buildExceptionFromCode($errorCode, $reportText, $request, $response);
@@ -1275,9 +1271,13 @@ final class EbicsClient implements EbicsClientInterface
      */
     private function uploadTransaction(callable $requestClosure): UploadTransaction
     {
+        echo '<BR><BR> uploadTransaction <BR>';
+
         $transaction = $this->transactionFactory->createUploadTransaction();
         $transaction->setKey($this->cryptService->generateTransactionKey());
         $transaction->setNumSegments(1);
+
+        var_dump($transaction);
 
         $request = call_user_func_array($requestClosure, [$transaction]);
 
@@ -1301,6 +1301,9 @@ final class EbicsClient implements EbicsClientInterface
         $segment->setTransactionId($transaction->getInitialization()->getTransactionId());
         $transaction->addSegment($segment);
         $transaction->setKey($transaction->getInitialization()->getTransactionId());
+
+        echo "<BR><BR> Transaction : <BR>";
+        var_dump($transaction);
 
         $this->transferTransfer($transaction);
 
@@ -1352,9 +1355,12 @@ final class EbicsClient implements EbicsClientInterface
     ): UploadOrderResult {
         $orderResult = $this->orderResultFactory->createUploadOrderResult();
         $orderResult->setTransaction($transaction);
-        //$orderResult->setDataDocument($document);
-        //$orderResult->setData($document->getContent());
+        // $orderResult->setDataDocument($document);
+        // $orderResult->setData($document->getContent());
         $orderResult->setData(file_get_contents("/Users/sarahmoreau/Desktop/Virements_20240717_112958.xml"));
+
+        echo '<BR> **** Order Result **** <BR>';
+        var_dump($orderResult);
 
         return $orderResult;
     }

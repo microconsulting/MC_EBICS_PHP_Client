@@ -102,6 +102,8 @@ final class CryptService
      */
     public function encryptByKey(string $key, string $data): string
     {
+        echo '<BR> *** encrypt by key **** <BR><BR>';
+
         $aes = $this->aesFactory->create();
         $aes->setKeyLength(128);
         $aes->setKey($key);
